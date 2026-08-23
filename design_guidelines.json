@@ -1,0 +1,171 @@
+{
+  "app_name": "LOPI",
+  "personality": "4. Tactile / Playful LIGHT",
+  "personality_one_liner": "A youthful, vibrant, and tactile social network that makes discovering and joining local plans feel exciting and approachable.",
+  "color": {
+    "surface": "#FFFFFF",
+    "onSurface": "#1A1D24",
+    "surfaceSecondary": "#F5F7FA",
+    "onSurfaceSecondary": "#4A5568",
+    "surfaceTertiary": "#EDF0FF",
+    "onSurfaceTertiary": "#3B4CF6",
+    "surfaceInverse": "#1A1D24",
+    "onSurfaceInverse": "#FFFFFF",
+    "brand": "#3B4CF6",
+    "brandPrimary": "#3B4CF6",
+    "onBrandPrimary": "#FFFFFF",
+    "brandSecondary": "#6B4EE6",
+    "onBrandSecondary": "#FFFFFF",
+    "brandTertiary": "#EDF0FF",
+    "onBrandTertiary": "#3B4CF6",
+    "success": "#38A169",
+    "onSuccess": "#FFFFFF",
+    "warning": "#DD6B20",
+    "onWarning": "#FFFFFF",
+    "error": "#E53E3E",
+    "onError": "#FFFFFF",
+    "info": "#3182CE",
+    "onInfo": "#FFFFFF",
+    "border": "#E2E8F0",
+    "borderStrong": "#3B4CF6",
+    "divider": "#EDF2F7"
+  },
+  "typography": {
+    "displayFontFamily": "Fredoka",
+    "textFontFamily": "Nunito",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Generous spacing. Use large tap targets. Avoid dense layouts.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 6,
+    "md": 12,
+    "lg": 20,
+    "pill": 999
+  },
+  "shadow_tier": 2,
+  "navigation": "bottom_tabs",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": "true",
+    "do's": [
+      "Use on the bottom tab bar.",
+      "Use on sticky headers or bottom CTA containers (like the Unirme button).",
+      "Use over the hero photo in the parche details."
+    ],
+    "dont's": [
+      "Do not use on list rows or normal cards.",
+      "Do not use on inputs."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Onboarding_Interests",
+      "purpose": "Select 5 interests to personalize the feed.",
+      "states": {
+        "loading": "Centered spinner",
+        "empty": "N/A",
+        "error": "Failed to load categories. Retry button."
+      },
+      "layout": "Circular bubble UI for interests. Use flexWrap: 'wrap' and justifyContent: 'center' with gap md. Each item is a pill/circular chip with a thick blue border (borderStrong) when selected. Sticky primary CTA at the bottom using glassmorphism background."
+    },
+    {
+      "name": "Home_Feed",
+      "purpose": "Instagram-style vertical feed of parches to discover and join.",
+      "states": {
+        "loading": "Skeleton cards",
+        "empty": "Illustration of friends, 'No parches nearby right now. Be the first to create one!'",
+        "error": "Error loading feed. Retry button."
+      },
+      "layout": "Vertical scroll of large, tactile cards (shadow 2, radius lg). Each card has a top row (Avatar + Username + 'Detalles >'), a large edge-to-edge hero photo, and a bottom section with Title, Date, City, Participants (👥), Category Tag, and interactions (❤️, 💬, bookmark)."
+    },
+    {
+      "name": "Parche_Detail",
+      "purpose": "View parche information and join the plan.",
+      "states": {
+        "loading": "Skeleton of hero and content",
+        "empty": "N/A",
+        "error": "Error loading details. Retry button."
+      },
+      "layout": "Full-bleed hero image at the top with vertical gradient scrim to ensure back button readability. The content sits in a lifted surface pulled up over the image. Sticky bottom 'UNIRME' (Join) button wrapped in a glass container over scrollable content."
+    },
+    {
+      "name": "Explore",
+      "purpose": "Search and filter parches by category, city, or date.",
+      "states": {
+        "loading": "Skeleton grid",
+        "empty": "No results found. Clear filters.",
+        "error": "Error loading results. Retry."
+      },
+      "layout": "Sticky top search bar. Below it, a horizontally scrolling row of filter chips (Hoy, Esta semana, Cerca de mí). Below that, a 2-column grid (or masonry) of smaller parche cards."
+    },
+    {
+      "name": "Profile",
+      "purpose": "User profile with stats, friends, and active parches.",
+      "states": {
+        "loading": "Skeleton profile",
+        "empty": "N/A",
+        "error": "Error loading profile. Retry button."
+      },
+      "layout": "Large circular avatar. Horizontal stat row (Amigos, Seguidores, Siguiendo, Parches). Large primary CTA button ('Enviar solicitud de amistad'). Below, a horizontally scrolling circular grid of interests. Bottom section uses top-tab navigation to switch between 'Mis Parches' and 'Etiquetas'."
+    }
+  ],
+  "images": {
+    "parche_card_1": {
+      "url": "https://images.pexels.com/photos/12932171/pexels-photo-12932171.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Friends clinking glasses at dinner party"
+    },
+    "parche_card_2": {
+      "url": "https://images.unsplash.com/photo-1786119942696-8d30a4760b91?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHw0fHxjb2xvbWJpYSUyMGZyaWVuZHMlMjBwYXJ0eSUyMHNwb3J0cyUyMGRpbm5lcnxlbnwwfHx8fDE3ODc0OTY2MTV8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Group of friends playing board games"
+    },
+    "avatar_1": {
+      "url": "https://images.pexels.com/photos/12850150/pexels-photo-12850150.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Young hispanic man profile portrait"
+    },
+    "avatar_2": {
+      "url": "https://images.unsplash.com/photo-1600570848245-0439042581b7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHx5b3VuZyUyMGhpc3BhbmljJTIwcGVyc29uJTIwcHJvZmlsZSUyMHBvcnRyYWl0fGVufDB8fHx8MTc4NzQ5NjYxNXww&ixlib=rb-4.1.0&q=85",
+      "alt": "Man face close up portrait"
+    }
+  },
+  "haptics": {
+    "join_parche": "success",
+    "like_parche": "light",
+    "select_interest": "selection",
+    "add_friend": "medium"
+  },
+  "instructions_to_main_agent": [
+    "CRITICAL COLOR RULE EXCEPTION: The brief EXPLICITLY requested bright blue (#3B4CF6) and violet (#6B4EE6). This is a DIRECT OVERRIDE of the standard 'no blue/purple' rule. Do not replace these colors. Use them aggressively for branding as requested.",
+    "Implement expo-linear-gradient across main CTAs (like 'UNIRME') and large promotional elements, flowing from brandPrimary (blue) to brandSecondary (violet) to match LOPI's identity.",
+    "Typography: Use Fredoka for all headings to give a youthful, handwritten/rounded feel as requested. Use Nunito for readable body text.",
+    "Circular Categories: In the onboarding flow, build large circular chips for the interests. When selected, apply a thick blue border (`borderStrong`) and change the background tint. Use Phosphor icons (e.g., sports, music) inside them instead of emojis.",
+    "Feed Design: Follow the layout of Instagram. Use large images with the top row showing the creator's avatar and name. Make sure there are clear counters for likes, comments, and participants.",
+    "Always place a gradient scrim (top to bottom, transparent to dark) under text that sits on top of images (like the hero image in Parche Detail)."
+  ]
+}
