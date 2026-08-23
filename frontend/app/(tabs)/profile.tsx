@@ -86,9 +86,19 @@ export default function Profile() {
                 <Pressable testID="edit-profile-btn" onPress={() => setEdit(true)} hitSlop={8}>
                   <Ionicons name="create-outline" size={22} color="#fff" />
                 </Pressable>
-                <Pressable testID="logout-btn" onPress={logout} hitSlop={8}>
-                  <Ionicons name="log-out-outline" size={24} color="#fff" />
-                </Pressable>
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <Pressable testID="profile-friends-btn" onPress={() => router.push('/friends')} hitSlop={8}>
+                    <Ionicons name="people-outline" size={22} color="#fff" />
+                  </Pressable>
+                  {user.role === 'super_admin' && (
+                    <Pressable testID="profile-admin-btn" onPress={() => router.push('/admin')} hitSlop={8}>
+                      <Ionicons name="shield-checkmark-outline" size={22} color="#fff" />
+                    </Pressable>
+                  )}
+                  <Pressable testID="logout-btn" onPress={logout} hitSlop={8}>
+                    <Ionicons name="log-out-outline" size={24} color="#fff" />
+                  </Pressable>
+                </View>
               </View>
               <Pressable onPress={pickAndUpload} testID="change-avatar-btn">
                 <Image source={{ uri: user.photo || AVATAR_FALLBACK + encodeURIComponent(user.name) }} style={styles.avatar} contentFit="cover" />

@@ -1,6 +1,6 @@
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter, useSegments, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { LogBox, View, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -16,19 +16,39 @@ function RootNavigator() {
   const { user, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const pathname = usePathname();
+  // Remember where the user was before we bounced them to /login (deep links).
+  const pendingRoute = useRef<string | null>(null);
 
   useEffect(() => {
     if (loading) return;
     const inAuth = segments[0] === '(auth)';
-    if (!user && !inAuth) {
-      router.replace('/(auth)/login');
-    } else if (user && inAuth) {
-      if (!user.interests || user.interests.length < 5) router.replace('/(auth)/interests');
-      else router.replace('/(tabs)/home');
-    } else if (user && user.interests.length < 5 && segments[0] !== '(auth)') {
-      router.replace('/(auth)/interests');
+
+    if (!user) {
+      if (!inAuth) {
+        // Preserve deep link target so we can restore it after login/register.
+        if (pathname && pathname !== '/' && !pathname.startsWith('/(auth)')) {
+          pendingRoute.current = pathname;
+        }
+        router.replace('/(auth)/login');
+      }
+      return;
     }
-  }, [user, loading, segments, router]);
+
+    // User is logged in
+    if (!user.interests || user.interests.length < 5) {
+      if (segments[segments.length - 1] !== 'interests') {
+        router.replace('/(auth)/interests');
+      }
+      return;
+    }
+
+    if (inAuth) {
+      const target = pendingRoute.current;
+      pendingRoute.current = null;
+      router.replace(target || '/(tabs)/home');
+    }
+  }, [user, loading, segments, router, pathname]);
 
   if (loading) {
     return (
