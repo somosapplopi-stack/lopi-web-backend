@@ -80,11 +80,6 @@ export default function Login() {
                   ¿Nuevo en LOPI? <Text style={{ color: theme.colors.brandPrimary, fontWeight: '800' }}>Regístrate</Text>
                 </Text>
               </Pressable>
-
-              <View style={styles.demoBox}>
-                <Text style={styles.demoTitle}>Demo</Text>
-                <Text style={styles.demoText}>usuario: carolinav · pass: Demo1234!</Text>
-              </View>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
