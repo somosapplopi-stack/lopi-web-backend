@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "LOPI",
+    "slug": "lopi-social",
     "version": "1.0.0",
+    "description": "LOPI — ¿Qué hay pa' hacer? Descubre y únete a parches (planes) con amigos y personas nuevas en tu ciudad.",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "lopi",
@@ -15,7 +16,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000000"
+        "backgroundColor": "#3B4CF6"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.emergent.lopisocial.of0scu"
@@ -23,7 +24,22 @@
     "web": {
       "bundler": "metro",
       "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "name": "LOPI",
+      "shortName": "LOPI",
+      "description": "LOPI — ¿Qué hay pa' hacer? Descubre y únete a parches con amigos y personas nuevas en tu ciudad.",
+      "themeColor": "#3B4CF6",
+      "backgroundColor": "#3B4CF6",
+      "display": "standalone",
+      "orientation": "portrait",
+      "startUrl": "/",
+      "lang": "es",
+      "meta": {
+        "apple-mobile-web-app-capable": "yes",
+        "apple-mobile-web-app-status-bar-style": "black-translucent",
+        "apple-mobile-web-app-title": "LOPI",
+        "mobile-web-app-capable": "yes"
+      }
     },
     "plugins": [
       "expo-router",
@@ -33,7 +49,7 @@
           "image": "./assets/images/splash-image.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#000000"
+          "backgroundColor": "#3B4CF6"
         }
       ]
     ],

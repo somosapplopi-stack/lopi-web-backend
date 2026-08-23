@@ -1,14 +1,18 @@
 # LOPI — PRD
 
 ## What
-LOPI is a mobile social network for creating and joining **parches** (informal group plans/activities) in Colombia. Users register, pick 5 interest categories, browse a personalized feed, join or create parches, comment, chat inside parche groups, make friends, share plans by link, and administrators moderate the community through a dedicated Admin Panel.
+LOPI is a **mobile + web** social network for creating and joining "parches" (informal group plans/activities) in Colombia. Users register, pick 5 interest categories, browse a personalized feed, join or create parches, comment, chat inside parche groups, make friends, share plans by link, and administrators moderate the community through a dedicated Admin Panel.
+
+## Platforms
+- **iOS / Android** (via Expo Go and native builds)
+- **Web (PWA)** installable from Safari/Chrome — same code, same MongoDB, same users. The mobile-shaped shell is centered on desktop and full-width on phones (max-width 480px).
 
 ## Users
 Young adults across Bucaramanga, Bogotá, Medellín, Barranquilla, Cartagena, Cúcuta looking for spontaneous plans and meeting people around shared interests.
 
 ## Core features
 ### Auth & onboarding
-- Email/password register + login (bcrypt + JWT, 30-day tokens, SecureStore).
+- Email/password register + login (bcrypt + JWT, 30-day tokens, SecureStore on native / localStorage on web).
 - Mandatory selection of exactly 5 interest categories.
 
 ### Feed & discovery
@@ -17,14 +21,14 @@ Young adults across Bucaramanga, Bogotá, Medellín, Barranquilla, Cartagena, C�
 - **Mis Parches** with three tabs: Uniéndome / Creados / Guardados.
 
 ### Parche detail
-- Photo, creator, meta grid (date/time/place/cupos), description.
-- Sticky **Unirme al parche** CTA (also handles Salir).
-- Like, Save, **Share** via native OS share sheet (URL: `/parche/{id}`).
+- Photo, creator, meta grid, description.
+- Sticky **Unirme al parche** CTA.
+- Like, Save, **Share** via native OS share sheet on mobile / Web Share API on browser.
 - **Comments**: create/list/delete-own with author avatar + timestamp; notifies creator.
-- **Group chat** (`/parche/{id}/chat`): visible only to creator + participants; text bubbles with avatar/name/hour, history persisted, polls every 5s.
+- **Group chat** (`/parche/{id}/chat`): visible only to creator + participants; bubbles with avatar/name/hour; history persisted; polls every 5s.
 
 ### Create parche
-- Photo (Emergent Object Storage), title, description, category, city, location, date, time, capacity, visibility: `public` | `friends` (only creator + participants + friends of creator can view) | `approval`.
+- Photo (Emergent Object Storage), title, description, category, city, location, date, time, capacity, visibility: `public` | `friends` | `approval`.
 
 ### Friends (`/friends`)
 - 4 tabs: Amigos / Recibidas / Enviadas / Buscar.
@@ -34,29 +38,27 @@ Young adults across Bucaramanga, Bogotá, Medellín, Barranquilla, Cartagena, C�
 
 ### Notifications (`/notifications`)
 - Bell in home header with unread badge.
-- Feed of `comment`, `chat`, `join`, `friend_request`, `friend_accept` events with timestamps.
-- Tapping a notification opens the related parche or friends screen.
+- Feed of `comment`, `chat`, `join`, `friend_request`, `friend_accept` events.
 - Read-all on view.
 
 ### Deep linking
-- `/parche/{id}` route is deep-link-able. If user isn't logged in, we save the target and route them back to it after login/register.
+- `/parche/{id}` route is deep-linkable both on the web and via `lopi://` scheme on native.
+- If the user isn't logged in, the intended route is saved and restored after login/register.
 
 ### Super Admin (`/admin`)
 - Auto-promotion for email `gerencia@urielhernandez.com`.
-- Four tabs:
-  - **Estadísticas**: total users, new today/week/month, active-week, total parches, participations, % with participants, users/parches by city, top categories, top-participation parches.
-  - **Usuarios**: search + suspend/reactivate/block (super admin cannot be affected).
-  - **Parches**: search/filter + hide/show + delete (cascades to comments + messages).
-  - **Reportes**: filter by pending/in_review/resolved/dismissed + status transitions.
+- Four tabs: Estadísticas · Usuarios · Parches · Reportes.
+
+## Web / PWA
+- Bundled by Metro; `output: "single"` (SPA).
+- **PWA manifest** at `/manifest.webmanifest`, theme color `#3B4CF6`, standalone display, portrait, name "LOPI", short name "LOPI".
+- **Service Worker** at `/sw.js` for installability.
+- Open Graph + Twitter Card meta tags for WhatsApp/Twitter link previews.
+- Runtime shell injection in `src/lib/web-shell.ts` centers the app in a 480px mobile-shaped container on desktop while preserving full-width on phones.
+- Same backend at `/api/*` and same MongoDB across mobile and web — accounts, parches, comments, chats and admin actions are shared.
 
 ## Data model (MongoDB)
-- `users`: id, name, username, email, password_hash, city, photo, bio, interests[], friends_count, followers_count, following_count, role, status, last_seen, created_at.
-- `parches`: id, title, description, category, city, location, date, time_start, time_end, capacity, visibility, hidden, photo, creator_id, participants[], likes[], saves[], comments_count, created_at.
-- `comments`: id, parche_id, user_id, text, created_at.
-- `messages`: id, parche_id, user_id, text, created_at.
-- `friendships`: id, from_user, to_user, status (pending|accepted|rejected), created_at, accepted_at?.
-- `notifications`: id, user_id, kind, title, body, data, read, created_at.
-- `reports`: id, reporter_id, target_type (user|parche), target_id, reason, status (pending|in_review|resolved|dismissed), created_at, resolved_at?.
+Same as prior iteration. Collections: `users`, `parches`, `comments`, `messages`, `friendships`, `notifications`, `reports`. All IDs are UUID strings; `_id` excluded in responses.
 
 ## Integrations
 - Local auth (FastAPI + bcrypt via `pwdlib` + PyJWT).
@@ -67,7 +69,7 @@ Bottom tabs: **Inicio | Explorar | + | Mis Parches | Perfil**.
 Additional routes: `/friends`, `/notifications`, `/admin`, `/parche/{id}`, `/parche/{id}/chat`.
 
 ## Seed
-15 demo users + 20 parches across 6 Colombian cities and diverse categories. Idempotent.
+15 demo users + 20 parches across 6 Colombian cities. Idempotent.
 
 ## Explicitly out of scope
 Payments, ads, marketplace, reservations, video calls, AI, subscriptions, push notifications.

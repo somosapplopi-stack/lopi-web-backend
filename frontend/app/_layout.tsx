@@ -7,10 +7,12 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useIconFonts } from "@/src/hooks/use-icon-fonts";
 import { AuthProvider, useAuth } from "@/src/lib/auth";
+import { bootstrapWebHead } from "@/src/lib/web-shell";
 
 LogBox.ignoreAllLogs(true);
 
 SplashScreen.preventAutoHideAsync();
+bootstrapWebHead();
 
 function RootNavigator() {
   const { user, loading } = useAuth();
