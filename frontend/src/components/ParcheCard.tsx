@@ -7,7 +7,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { CATEGORY_MAP } from '@/src/lib/categories';
 import { theme } from '@/src/theme';
 import { api } from '@/src/lib/api';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/src/lib/web-compat';
 import { useState } from 'react';
 
 export type ParcheCardData = {
@@ -47,7 +47,7 @@ export function ParcheCard({ parche, onChange }: { parche: ParcheCardData; onCha
 
   async function toggle(action: 'like' | 'save') {
     try {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      haptics.impact();
       const updated = await api<ParcheCardData>(`/parches/${state.id}/${action}`, { method: 'POST' });
       setState(updated);
       onChange?.(updated);
@@ -66,7 +66,7 @@ export function ParcheCard({ parche, onChange }: { parche: ParcheCardData; onCha
           style={styles.avatar}
           contentFit="cover"
         />
-        <View style={{ flex: 1, marginLeft: theme.spacing.md }}>
+        <View style={{ flex: 1, marginLeft: theme.spacing.md }} pointerEvents="none">
           <Text style={styles.creatorName} numberOfLines={1}>{state.creator.name}</Text>
           <Text style={styles.subCaption} numberOfLines={1}>
             {(cat?.name || state.category)}: {formatDate(state.date, state.time_start)} · {state.location || state.city}
@@ -90,8 +90,8 @@ export function ParcheCard({ parche, onChange }: { parche: ParcheCardData; onCha
         </View>
       </View>
 
-      <Text style={styles.title} numberOfLines={2}>{state.title}</Text>
-      {state.description ? <Text style={styles.description} numberOfLines={2}>{state.description}</Text> : null}
+      <Text style={styles.title} numberOfLines={2} pointerEvents="none">{state.title}</Text>
+      {state.description ? <Text style={styles.description} numberOfLines={2} pointerEvents="none">{state.description}</Text> : null}
 
       <View style={styles.actionsRow}>
         <Pressable

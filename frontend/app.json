@@ -42,7 +42,17 @@
       }
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "asyncRoutes": {
+            "web": false,
+            "android": false,
+            "ios": false,
+            "default": false
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {

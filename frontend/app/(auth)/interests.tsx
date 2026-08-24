@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { GradientButton } from '@/src/components/GradientButton';
 import { CATEGORIES } from '@/src/lib/categories';
 import { useAuth } from '@/src/lib/auth';
+import { haptics } from '@/src/lib/web-compat';
 import { theme } from '@/src/theme';
 
 const REQUIRED = 5;
@@ -20,7 +20,7 @@ export default function Interests() {
   const [busy, setBusy] = useState(false);
 
   function toggle(slug: string) {
-    Haptics.selectionAsync();
+    haptics.selection();
     setSelected((s) => (s.includes(slug) ? s.filter((x) => x !== slug) : s.length >= REQUIRED ? s : [...s, slug]));
   }
 

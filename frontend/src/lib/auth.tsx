@@ -47,10 +47,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    let done = false;
+    // Safety net: never let the app hang on the bootstrap spinner. If storage or
+    // the network is slow on web, still show the UI after a short timeout.
+    const timer = setTimeout(() => { if (!done) setLoading(false); }, 4000);
     (async () => {
       await refresh();
+      done = true;
+      clearTimeout(timer);
       setLoading(false);
     })();
+    return () => clearTimeout(timer);
   }, [refresh]);
 
   const login = useCallback(async (identifier: string, password: string) => {

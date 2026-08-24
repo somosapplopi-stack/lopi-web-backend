@@ -1,22 +1,57 @@
 // Web storage (Metro picks index.ts on native).
+// Uses window.localStorage directly: it is synchronous, reliable and persistent
+// across reloads. We intentionally do NOT use AsyncStorage on web because its
+// IndexedDB-backed shim can hang on a cold page load (blocking the auth
+// bootstrap) and has flaky writes inside sandboxed preview iframes.
 // Helpers never throw: reads return `fallback`, writes return `false`.
-// Values supported: string | number | boolean | null (JSON-serialized on disk).
-// Usage: import { storage } from "@/src/utils/storage"; await storage.getItem(key, fallback);
-// No Keychain on web — secure* helpers reuse AsyncStorage (no expo-secure-store).
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AssertNoExtras, StorageBase, StorageItemValue } from "./storage-base";
 
-export class Storage extends StorageBase {
-  // General KV — backed by AsyncStorage (its built-in web shim uses IndexedDB).
+function ls(): Storage | null {
+  try {
+    if (typeof window !== "undefined" && window.localStorage) return window.localStorage;
+  } catch {
+    /* access to localStorage can throw in some sandboxes */
+  }
+  return null;
+}
+
+// Fallback in-memory map when localStorage is unavailable (private mode, etc.)
+const memory = new Map<string, string>();
+
+function readRaw(key: string): string | null {
+  const store = ls();
+  if (store) {
+    try { return store.getItem(key); } catch { /* fall through */ }
+  }
+  return memory.has(key) ? (memory.get(key) as string) : null;
+}
+
+function writeRaw(key: string, value: string): boolean {
+  const store = ls();
+  if (store) {
+    try { store.setItem(key, value); return true; } catch { /* fall through */ }
+  }
+  memory.set(key, value);
+  return true;
+}
+
+function deleteRaw(key: string): boolean {
+  const store = ls();
+  if (store) {
+    try { store.removeItem(key); } catch { /* fall through */ }
+  }
+  memory.delete(key);
+  return true;
+}
+
+class Storage extends StorageBase {
   async getItem<Fallback extends StorageItemValue>(
     key: string,
     fallback: Fallback,
   ): Promise<Fallback | null> {
     try {
-      const raw = await AsyncStorage.getItem(key);
-      return this.retrieve(raw, fallback);
+      return this.retrieve(readRaw(key), fallback);
     } catch (e) {
       this.warn("getItem", key, e);
       return fallback;
@@ -28,8 +63,7 @@ export class Storage extends StorageBase {
     value: Value,
   ): Promise<boolean> {
     try {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
-      return true;
+      return writeRaw(key, JSON.stringify(value));
     } catch (e) {
       this.warn("setItem", key, e);
       return false;
@@ -38,15 +72,14 @@ export class Storage extends StorageBase {
 
   async removeItem(key: string): Promise<boolean> {
     try {
-      await AsyncStorage.removeItem(key);
-      return true;
+      return deleteRaw(key);
     } catch (e) {
       this.warn("removeItem", key, e);
       return false;
     }
   }
 
-  // Browsers have no Keychain — secure* helpers fall through to AsyncStorage.
+  // Browsers have no Keychain — secure* helpers fall through to localStorage.
   async secureGet<Fallback extends StorageItemValue>(
     key: string,
     fallback: Fallback,

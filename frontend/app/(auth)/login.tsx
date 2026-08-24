@@ -11,6 +11,7 @@ import { LopiLogo } from '@/src/components/LopiLogo';
 import { useAuth } from '@/src/lib/auth';
 import { theme } from '@/src/theme';
 
+
 export default function Login() {
   const router = useRouter();
   const { login } = useAuth();

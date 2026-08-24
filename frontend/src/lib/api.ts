@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { storage } from '@/src/utils/storage';
 
 const TOKEN_KEY = 'lopi_auth_token';
@@ -60,11 +62,20 @@ export function fileUrl(path?: string | null): string | undefined {
 export async function uploadImage(uri: string): Promise<string> {
   const token = await getToken();
   const form = new FormData();
-  const filename = uri.split('/').pop() || `photo-${Date.now()}.jpg`;
-  const match = /\.(\w+)$/.exec(filename);
+  const rawName = uri.split('/').pop() || `photo-${Date.now()}.jpg`;
+  const match = /\.(\w+)$/.exec(rawName);
   const type = match ? `image/${match[1].toLowerCase() === 'jpg' ? 'jpeg' : match[1].toLowerCase()}` : 'image/jpeg';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  form.append('file', { uri, name: filename, type } as any);
+
+  if (Platform.OS === 'web') {
+    // On web, image picker returns a blob:/data: URI. Browsers cannot send the
+    // React Native `{ uri, name, type }` shape, so we resolve the actual Blob.
+    const blob = await (await fetch(uri)).blob();
+    const ext = (blob.type && blob.type.split('/')[1]) || 'jpg';
+    const filename = /\.\w+$/.test(rawName) ? rawName : `photo-${Date.now()}.${ext}`;
+    form.append('file', blob, filename);
+  } else {
+    form.append('file', { uri, name: rawName, type } as any);
+  }
   const res = await fetch(`${BASE_URL}/api/upload`, {
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : undefined,

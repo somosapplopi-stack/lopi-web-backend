@@ -1,11 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -13,6 +12,7 @@ import { GradientButton } from '@/src/components/GradientButton';
 import { api, BASE_URL } from '@/src/lib/api';
 import { useAuth } from '@/src/lib/auth';
 import { CATEGORY_MAP } from '@/src/lib/categories';
+import { haptics, shareContent } from '@/src/lib/web-compat';
 import { theme } from '@/src/theme';
 
 const AVATAR_FALLBACK = 'https://ui-avatars.com/api/?background=3B4CF6&color=fff&name=';
@@ -62,7 +62,7 @@ export default function ParcheDetail() {
     if (!p) return;
     setBusy(true); setErr(null);
     try {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      haptics.success();
       const action = p.joined ? 'leave' : 'join';
       const updated = await api<any>(`/parches/${p.id}/${action}`, { method: 'POST' });
       setP(updated);
@@ -82,7 +82,7 @@ export default function ParcheDetail() {
     if (!p) return;
     const url = p.share_url?.startsWith('http') ? p.share_url : `${BASE_URL}/parche/${p.id}`;
     try {
-      await Share.share({ message: `Únete a "${p.title}" en LOPI 🎉\n${url}`, url });
+      await shareContent({ title: p.title, message: `Únete a "${p.title}" en LOPI 🎉\n${url}`, url });
     } catch (e) { console.warn('share', e); }
   }
 
